@@ -7,16 +7,25 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install dependencies
-        run: |
-          npm install
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-      - name: Run build (placeholder)
-        run: |
-          echo "No build yet, but this is where we will build!"
+      - name: Install dependencies
+        run: npm install
+        working-directory: client
+
+      - name: Build
+        run: npm run build
+        working-directory: client
+
+      - name: Test
+        run: npm test
+        working-directory: client
