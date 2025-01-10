@@ -10,7 +10,7 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Use Node.js
@@ -19,16 +19,13 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: |
-          cd ../../client
-          npm install
+        run: npm install
+        working-directory: client
 
       - name: Build
-        run: |
-          cd ../../client
-          npm run build
+        run: npm run build
+        working-directory: client
 
       - name: Test
-        run: |
-          cd ../../client
-          npm test
+        run: npm test
+        working-directory: client
