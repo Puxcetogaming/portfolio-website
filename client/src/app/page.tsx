@@ -136,7 +136,7 @@ function ExhaustParticle({
       exit={{ opacity: 0 }}
       style={{
         // Move horizontally by offsetX% 
-        left: "44%",
+        left: "43.5%",
         transform: `translateX(${offsetX}%)`,
         // Place the particle below rocket 
         bottom: `${offsetBottom}rem`,
