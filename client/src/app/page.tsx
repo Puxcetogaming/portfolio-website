@@ -4,6 +4,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import StarField from "../../components/StarField";
+import Image from "next/image";
 
 export default function LandingPage() {
   const [launched, setLaunched] = useState(false);
@@ -12,15 +13,12 @@ export default function LandingPage() {
   const handleLaunch = () => {
     setLaunched(true);
 
-    // Spawn exhaust every 20ms for ~10 seconds
+    // Spawn exhaust every 20ms for ~10s
     const interval = setInterval(() => {
-      setExhaust((prev) => [
-        ...prev,
-        { id: Date.now() + Math.random(), x: 0, y: 0 },
-      ]);
+      setExhaust((prev) => [...prev, { id: Date.now() + Math.random() }]);
     }, 20);
 
-    // Stop spawning after 10s
+    // Stop after 10s
     setTimeout(() => {
       clearInterval(interval);
     }, 10000);
@@ -64,7 +62,7 @@ export default function LandingPage() {
         </motion.button>
       </section>
 
-      {/* Floating Planet (top-left) */}
+      {/* Floating Planet */}
       <motion.img
         src="/planet.png"
         alt="Planet"
@@ -74,18 +72,19 @@ export default function LandingPage() {
         transition={{ duration: 4, ease: "easeOut" }}
       />
 
-      {/* Rocket (bottom-center) */}
+      {/* Rocket */}
       <motion.div
         className="absolute bottom-0 left-1/2 transform -translate-x-1/2"
         initial={{ y: 400 }}
         animate={launched ? { y: -2000 } : { y: 400 }}
         transition={{ duration: 6, ease: "easeIn" }}
       >
-        {/* Larger Rocket */}
-        <img
+        <Image
           src="/StarShip.png"
           alt="Rocket"
-          className="h-64 md:h-96" // bigger rocket size
+          width={300}
+          height={200}
+          priority
         />
 
         {/* Exhaust Particles */}
@@ -93,7 +92,9 @@ export default function LandingPage() {
           {exhaust.map((particle) => (
             <ExhaustParticle
               key={particle.id}
-              particle={particle}
+              // tweak offsetX until your particles are perfectly centered
+              offsetX={-50}      
+              offsetBottom={-2.7}
             />
           ))}
         </AnimatePresence>
@@ -102,24 +103,27 @@ export default function LandingPage() {
   );
 }
 
-/** Type for an exhaust particle. */
+/** Minimal interface for exhaust. */
 type ExhaustParticle = {
   id: number;
-  x: number;
-  y: number;
 };
 
-/**
- * Single small "exhaust" particle that moves downward and fades out.
+/** 
+ * Renders a single exhaust particle.
+ * offsetX: horizontal shift (percent) from rocket center.
+ * offsetBottom: vertical offset in rem (from rocket image bottom).
  */
-function ExhaustParticle({ particle }: { particle: ExhaustParticle }) {
+function ExhaustParticle({
+  offsetX = -50,
+  offsetBottom = -2.5,
+}: {
+  offsetX?: number;
+  offsetBottom?: number;
+}) {
   return (
     <motion.div
       className="
         absolute
-        left-1/2
-        transform
-        -translate-x-1/2
         w-10
         h-10
         bg-yellow-400
@@ -131,7 +135,11 @@ function ExhaustParticle({ particle }: { particle: ExhaustParticle }) {
       transition={{ duration: 1, ease: "easeOut" }}
       exit={{ opacity: 0 }}
       style={{
-        bottom: "-2.5rem", // place under the rocket nozzle
+        // Move horizontally by offsetX% 
+        left: "44%",
+        transform: `translateX(${offsetX}%)`,
+        // Place the particle below rocket 
+        bottom: `${offsetBottom}rem`,
       }}
     />
   );
