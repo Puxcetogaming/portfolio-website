@@ -1,3 +1,4 @@
+// tailwind.config.js
 import type { Config } from "tailwindcss";
 
 export default {
@@ -8,9 +9,14 @@ export default {
   ],
   theme: {
     extend: {
-      colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+      keyframes: {
+        flameFlicker: {
+          "0%, 100%": { opacity: "0.6", transform: "scaleY(1)" },
+          "50%": { opacity: "1", transform: "scaleY(1.2)" },
+        },
+      },
+      animation: {
+        flameFlicker: "flameFlicker 0.5s infinite ease-in-out",
       },
     },
   },
